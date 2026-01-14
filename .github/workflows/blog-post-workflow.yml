@@ -1,4 +1,4 @@
-name: Update README with latest blog posts (cards)
+name: Update README with latest blog posts
 
 on:
   schedule:
@@ -17,69 +17,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Update README (table cards)
+      - name: Pull latest posts from RSS and update README
         uses: gautamkrishnar/blog-post-workflow@v1
         with:
           feed_list: "https://devbattery.com/feed.xml"
           max_post_count: 8
           readme_path: "README.md"
-          commit_message: "chore: update latest blog post cards"
-
-          template: |-
-            $description
-
-          item_exec: |-
-            const site = "https://devbattery.com";
-
-            // URL 상대경로 보정
-            if (item.url && item.url.startsWith("/")) item.url = site + item.url;
-
-            // categories 방어적 파싱
-            const rawCats = item.categories || [];
-            const catsStr = Array.isArray(rawCats)
-              ? rawCats.map(c => (typeof c === "string" ? c : (c.term || c.name || ""))).filter(Boolean).join(", ")
-              : String(rawCats || "");
-
-            const u = (item.url || "").toLowerCase();
-            const c = (catsStr || "").toLowerCase();
-
-            // 카테고리/URL 기반 썸네일 fallback
-            const pickThumb = () => {
-              if (c.includes("til") || u.includes("/til/")) return `${site}/assets/images/teasers/til.png`;
-              if (u.includes("/leetcode/") || c.includes("leetcode")) return `${site}/assets/images/teasers/leetcode.png`;
-              if (u.includes("/devops/") || c.includes("devops")) return `${site}/assets/images/teasers/devops.png`;
-              return `${site}/assets/images/teasers/default.png`;
-            };
-
-            // HTML → 텍스트 요약
-            const stripHtml = (html) => (html || "")
-              .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, " ")
-              .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, " ")
-              .replace(/<[^>]+>/g, " ")
-              .replace(/\s+/g, " ")
-              .trim();
-
-            const summary = stripHtml(item.summary);
-            const body = stripHtml(item.content || item.description);
-            const desc = (summary || body || "").slice(0, 140);
-
-            const rawDate = item.published || item.isoDate || item.date || item.pubDate || "";
-            const date = rawDate ? String(rawDate).slice(0, 10) : "";
-
-            const thumb = pickThumb();
-            const safeTitle = (item.title || "").replace(/"/g, "&quot;");
-
-            // ✅ HTML을 '한 줄'로 생성 (YAML 파싱 사고 방지)
-            item.description =
-              '<tr>' +
-                '<td width="140" valign="top">' +
-                  '<a href="' + item.url + '">' +
-                    '<img src="' + thumb + '" width="130" alt="' + safeTitle + '" />' +
-                  '</a>' +
-                '</td>' +
-                '<td valign="top">' +
-                  '<a href="' + item.url + '"><b>' + (item.title || "") + '</b></a><br/>' +
-                  '<sub>' + date + (catsStr ? ' • ' + catsStr : '') + '</sub><br/>' +
-                  desc +
-                '</td>' +
-              '</tr>';
+          commit_message: "chore: update latest blog posts"
