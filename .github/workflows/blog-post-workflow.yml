@@ -32,12 +32,12 @@ jobs:
             <tr>
               <td width="140" valign="top">
                 <a href="$url">
-                  <img src="$postImage" width="130" alt="$title" />
+                  <img src="$thumbnail" width="130" alt="$title" />
                 </a>
               </td>
               <td valign="top">
                 <a href="$url"><b>$title</b></a><br/>
-                <sub>$date • $categories</sub><br/>
+                <sub>$date</sub><br/>
                 $description
               </td>
             </tr>
@@ -46,33 +46,40 @@ jobs:
 
           custom_tags: "mmTeaser/media:thumbnail.url/,mmContent/media:content.url/,mmEnclosure/enclosure.url/"
 
+
           item_exec: |
             const site = "https://devbattery.com";
-
-            const fallbackByCategory = (cats) => {
+          
+            // 1) description: HTML 태그 제거
+            const stripHtml = (html) => (html || "")
+              .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, " ")
+              .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, " ")
+              .replace(/<[^>]+>/g, " ")
+              .replace(/\s+/g, " ")
+              .trim();
+          
+            // 2) 카테고리 기반 썸네일 fallback
+            const fallbackByCategory = (cats, url) => {
               const c = (cats || "").toLowerCase();
-              if (c.includes("til")) return `${site}/assets/images/teasers/til.png`;
-              if (c.includes("algorithm")) return `${site}/assets/images/teasers/algorithm.png`;
-              // 필요하면 계속 추가
+          
+              // URL에도 /til/ 같은 경로가 있으니 같이 활용
+              const u = (url || "").toLowerCase();
+          
+              if (c.includes("til") || u.includes("/til/")) return `${site}/assets/images/teasers/til.png`;
+              if (c.includes("leetcode") || u.includes("/leetcode/")) return `${site}/assets/images/teasers/leetcode.png`;
+              if (c.includes("devops") || u.includes("/devops/")) return `${site}/assets/images/teasers/devops.png`;
+          
               return `${site}/assets/images/teasers/default.png`;
             };
-
-            // 1) postImage가 비어 있으면 커스텀 태그(mmTeaser/mmContent/mmEnclosure)에서 먼저 채움
-            const custom = (item.customTags || item.custom_tags || {});
-            item.postImage = item.postImage || custom.mmTeaser || custom.mmContent || custom.mmEnclosure;
-
-            // 2) 그래도 없으면 카테고리 기반 fallback
-            item.postImage = item.postImage || fallbackByCategory(item.categories);
-
-            // 3) 이미지가 상대경로면 절대경로로 바꿈
-            if (item.postImage && item.postImage.startsWith("/")) {
-              item.postImage = site + item.postImage;
-            }
-
-            // 4) URL도 상대경로면 절대경로로 바꿈
+          
+            // 3) description 정리
+            item.description = stripHtml(item.description);
+          
+            // 4) 썸네일: 액션이 치환하는 변수명으로 맞추기 위해 item.thumbnail로 세팅
+            // (template에서 $thumbnail 사용)
+            item.thumbnail = fallbackByCategory(item.categories, item.url);
+          
+            // 5) URL 상대경로 방지
             if (item.url && item.url.startsWith("/")) {
               item.url = site + item.url;
             }
-
-            // ⚠️ 여기서 return item; 하면 Illegal return statement 에러가 납니다.
-            // 수정만 하고 끝내야 합니다.
