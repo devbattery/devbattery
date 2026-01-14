@@ -2,7 +2,7 @@ name: Update README with latest blog posts
 
 on:
   schedule:
-    - cron: "*/30 * * * *"  # every 30 minutes (UTC)
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -12,6 +12,11 @@ jobs:
   update-readme-with-blog:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Pull latest posts from RSS and update README
         uses: gautamkrishnar/blog-post-workflow@v1
         with:
