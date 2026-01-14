@@ -25,11 +25,9 @@ jobs:
           readme_path: "README.md"
           commit_message: "chore: update latest blog post cards"
 
-          # 제목/설명 길이 다듬기
           title_max_length: "60"
           description_max_length: "90"
 
-          # ✅ HTML table 행(<tr>)로 렌더링
           template: |
             <tr>
               <td width="140" valign="top">
@@ -44,15 +42,13 @@ jobs:
               </td>
             </tr>
 
-          # ✅ 날짜 포맷 (원하는 대로 바꿔도 됨)
           date_format: "UTC:yyyy-mm-dd"
 
-          # (선택) 피드에서 이미지가 잘 안 잡힐 경우를 대비한 커스텀 태그 추출
           custom_tags: "mmTeaser/media:thumbnail.url/,mmContent/media:content.url/,mmEnclosure/enclosure.url/"
 
-          # ✅ 이미지/URL 보정 + 이미지 없으면 카테고리 기본 썸네일로 fallback
           item_exec: |
             const site = "https://devbattery.com";
+
             const fallbackByCategory = (cats) => {
               const c = (cats || "").toLowerCase();
               if (c.includes("til")) return `${site}/assets/images/teasers/til.png`;
@@ -62,8 +58,6 @@ jobs:
             };
 
             // 1) postImage가 비어 있으면 커스텀 태그(mmTeaser/mmContent/mmEnclosure)에서 먼저 채움
-            // (blog-post-workflow의 결과 객체에 custom tag 값이 들어올 수 있음)
-            // 아래 키들은 tool 버전에 따라 다를 수 있어 방어적으로 처리
             const custom = (item.customTags || item.custom_tags || {});
             item.postImage = item.postImage || custom.mmTeaser || custom.mmContent || custom.mmEnclosure;
 
@@ -75,9 +69,10 @@ jobs:
               item.postImage = site + item.postImage;
             }
 
-            // 4) URL도 상대경로면 절대경로로 바꿈 (혹시 모를 케이스)
+            // 4) URL도 상대경로면 절대경로로 바꿈
             if (item.url && item.url.startsWith("/")) {
               item.url = site + item.url;
             }
 
-            return item;
+            // ⚠️ 여기서 return item; 하면 Illegal return statement 에러가 납니다.
+            // 수정만 하고 끝내야 합니다.
