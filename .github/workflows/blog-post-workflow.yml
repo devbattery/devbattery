@@ -25,61 +25,108 @@ jobs:
           readme_path: "README.md"
           commit_message: "chore: update latest blog post cards"
 
-          title_max_length: "60"
-          description_max_length: "90"
+          # 제목/설명 길이
+          title_max_length: "80"
+          description_max_length: "200"
 
+          # 템플릿은 item_exec가 만든 HTML(tr) 자체를 그대로 출력
           template: |
-            <tr>
-              <td width="140" valign="top">
-                <a href="$url">
-                  <img src="$thumbnail" width="130" alt="$title" />
-                </a>
-              </td>
-              <td valign="top">
-                <a href="$url"><b>$title</b></a><br/>
-                <sub>$date</sub><br/>
-                $description
-              </td>
-            </tr>
+            $description
 
+          # 날짜 포맷 (사용하진 않지만 유지)
           date_format: "UTC:yyyy-mm-dd"
 
-          custom_tags: "mmTeaser/media:thumbnail.url/,mmContent/media:content.url/,mmEnclosure/enclosure.url/"
-
+          # Atom feed에서는 이미지 태그가 없으므로 custom_tags는 생략 가능
+          # custom_tags: "mmTeaser/media:thumbnail.url/,mmContent/media:content.url/,mmEnclosure/enclosure.url/"
 
           item_exec: |
             const site = "https://devbattery.com";
-          
-            // 1) description: HTML 태그 제거
+
+            // 상대 URL 보정
+            if (item.url && item.url.startsWith("/")) item.url = site + item.url;
+
+            // categories는 Atom에서 배열/객체/문자열로 다양할 수 있어 방어적으로 처리
+            const rawCats = item.categories || [];
+            const catsStr = Array.isArray(rawCats)
+              ? rawCats
+                  .map(c => (typeof c === "string" ? c : (c.term || c.name || "")))
+                  .filter(Boolean)
+                  .join(", ")
+              : String(rawCats || "");
+
+            const u = (item.url || "").toLowerCase();
+            const c = (catsStr || "").toLowerCase();
+
+            // URL/카테고리 기반 썸네일 fallback
+            const pickThumb = () => {
+              if (c.includes("til") || u.includes("/til/")) return `${site}/assets/images/teasers/til.png`;
+
+              // Algorithm group
+              if (u.includes("/leetcode/") || c.includes("leetcode")) return `${site}/assets/images/teasers/leetcode.png`;
+              if (u.includes("/baekjoon/") || c.includes("baekjoon")) return `${site}/assets/images/teasers/baekjoon.png`;
+              if (u.includes("/programmers/") || c.includes("programmers")) return `${site}/assets/images/teasers/programmers.png`;
+              if (u.includes("/codeforces/") || c.includes("codeforces")) return `${site}/assets/images/teasers/codeforces.png`;
+              if (u.includes("/hackerrank/") || c.includes("hackerrank")) return `${site}/assets/images/teasers/hackerrank.png`;
+              if (u.includes("/inflearn/") || c.includes("inflearn")) return `${site}/assets/images/teasers/inflearn.png`;
+              if (u.includes("/recap/") || c.includes("recap")) return `${site}/assets/images/teasers/recap.png`;
+
+              // Issue / Project
+              if (u.includes("/project/") || c.includes("project")) return `${site}/assets/images/teasers/project.png`;
+
+              // Programming
+              if (u.includes("/devops/") || c.includes("devops")) return `${site}/assets/images/teasers/devops.png`;
+              if (u.includes("/java/") || c.includes("java")) return `${site}/assets/images/teasers/java.png`;
+              if (u.includes("/spring/") || c.includes("spring")) return `${site}/assets/images/teasers/spring.png`;
+              if (u.includes("/fastapi/") || c.includes("fastapi")) return `${site}/assets/images/teasers/fastapi.png`;
+              if (u.includes("/vue/") || c.includes("vue")) return `${site}/assets/images/teasers/vue.png`;
+              if (u.includes("/react/") || c.includes("react")) return `${site}/assets/images/teasers/react.png`;
+
+              // CS
+              if (u.includes("/network/") || c.includes("network")) return `${site}/assets/images/teasers/network.png`;
+              if (u.includes("/database/") || c.includes("database")) return `${site}/assets/images/teasers/database.png`;
+              if (u.includes("/data-structure/") || c.includes("data-structure")) return `${site}/assets/images/teasers/data-structure.png`;
+
+              return `${site}/assets/images/teasers/default.png`;
+            };
+
+            // HTML 태그 제거(요약 텍스트 생성)
             const stripHtml = (html) => (html || "")
               .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, " ")
               .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, " ")
               .replace(/<[^>]+>/g, " ")
               .replace(/\s+/g, " ")
               .trim();
-          
-            // 2) 카테고리 기반 썸네일 fallback
-            const fallbackByCategory = (cats, url) => {
-              const c = (cats || "").toLowerCase();
-          
-              // URL에도 /til/ 같은 경로가 있으니 같이 활용
-              const u = (url || "").toLowerCase();
-          
-              if (c.includes("til") || u.includes("/til/")) return `${site}/assets/images/teasers/til.png`;
-              if (c.includes("leetcode") || u.includes("/leetcode/")) return `${site}/assets/images/teasers/leetcode.png`;
-              if (c.includes("devops") || u.includes("/devops/")) return `${site}/assets/images/teasers/devops.png`;
-          
-              return `${site}/assets/images/teasers/default.png`;
-            };
-          
-            // 3) description 정리
-            item.description = stripHtml(item.description);
-          
-            // 4) 썸네일: 액션이 치환하는 변수명으로 맞추기 위해 item.thumbnail로 세팅
-            // (template에서 $thumbnail 사용)
-            item.thumbnail = fallbackByCategory(item.categories, item.url);
-          
-            // 5) URL 상대경로 방지
-            if (item.url && item.url.startsWith("/")) {
-              item.url = site + item.url;
-            }
+
+            // Atom: summary는 'work'처럼 짧고 깔끔 / content는 본문 HTML
+            const summary = stripHtml(item.summary);
+            const body = stripHtml(item.content || item.description);
+            const desc = (summary || body || "").slice(0, 140);
+
+            // 날짜: published/isoDate/date 등에서 안전하게 가져오기
+            const rawDate =
+              item.published ||
+              item.isoDate ||
+              item.date ||
+              item.pubDate ||
+              "";
+
+            // yyyy-mm-dd로 간단히 자르기 (Atom은 ISO 형태)
+            const date = rawDate ? String(rawDate).slice(0, 10) : "";
+
+            const thumb = pickThumb();
+            const safeTitle = (item.title || "").replace(/"/g, "&quot;");
+
+            // template에서 $description만 출력하므로, 여기에 <tr> 전체를 넣는다.
+            item.description = `
+<tr>
+  <td width="140" valign="top">
+    <a href="${item.url}">
+      <img src="${thumb}" width="130" alt="${safeTitle}" />
+    </a>
+  </td>
+  <td valign="top">
+    <a href="${item.url}"><b>${item.title || ""}</b></a><br/>
+    <sub>${date}${catsStr ? " • " + catsStr : ""}</sub><br/>
+    ${desc}
+  </td>
+</tr>`.trim();
