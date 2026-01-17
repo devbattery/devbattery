@@ -26,4 +26,4 @@ jobs:
           commit_message: "chore: update latest blog posts"
           custom_tags: "post_thumbnail/teaser_image/"
           date_format: "yyyy-mm-dd"
-          template: '<tr><td><a href="$url"><img src="$post_thumbnail" width="220" style="border-radius: 10px;"></a></td><td><a href="$url"><b>$title</b></a><br/>$date</td></tr>'
+          template: '<a href="$url" title="$title - $date"><img src="$post_thumbnail" width="48%" align="left" alt="$title" style="margin-right: 1%; margin-bottom: 1%; border-radius: 10px;"></a>'
