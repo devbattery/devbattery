@@ -17,13 +17,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Pull latest posts from RSS and update README
-        uses: gautamkrishnar/blog-post-workflow@v1
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          feed_list: "https://devbattery.com/feed.xml"
-          max_post_count: 6
-          readme_path: "README.md"
-          commit_message: "chore: update latest blog posts"
-          custom_tags: "post_thumbnail/teaser_image/"
-          date_format: "yyyy-mm-dd"
-          template: '<a href="$url" title="$title - $date"><img src="$post_thumbnail" width="48%" align="left" alt="$title" style="margin-right: 1%; margin-bottom: 1%; border-radius: 10px;"></a>'
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install feedparser
+
+      - name: Update README
+        run: python .github/scripts/update_readme.py
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore: update latest blog posts" || echo "No changes to commit"
+          git push
