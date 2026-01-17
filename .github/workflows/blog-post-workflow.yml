@@ -24,5 +24,6 @@ jobs:
           max_post_count: 6
           readme_path: "README.md"
           commit_message: "chore: update latest blog posts"
+          custom_tags: "post_thumbnail/teaser_image/"
           date_format: "yyyy-mm-dd"
-          template: '<tr><td><a href="$url"><img src="$image" width="220" style="border-radius: 10px;"></a></td><td><a href="$url"><b>$title</b></a><br/>$date</td></tr>'
+          template: '<tr><td><a href="$url"><img src="$post_thumbnail" width="220" style="border-radius: 10px;"></a></td><td><a href="$url"><b>$title</b></a><br/>$date</td></tr>'
