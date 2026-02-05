@@ -4,38 +4,38 @@
 <table>
   <tr>
     <td align="center" width="50%">
+      <a href="https://devbattery.com/til/company-37/"><img src="https://devbattery.com/assets/images/teasers/til.png" width="100%" style="border-radius: 10px;" alt="[TIL] 신입 개발자 공부/일 37일차"></a><br/>
+      <a href="https://devbattery.com/til/company-37/"><b>[TIL] 신입 개발자 공부/일 37일차</b></a><br/>
+      2026-02-04
+    </td>
+    <td align="center" width="50%">
+      <a href="https://devbattery.com/til/company-36/"><img src="https://devbattery.com/assets/images/teasers/til.png" width="100%" style="border-radius: 10px;" alt="[TIL] 신입 개발자 공부/일 36일차"></a><br/>
+      <a href="https://devbattery.com/til/company-36/"><b>[TIL] 신입 개발자 공부/일 36일차</b></a><br/>
+      2026-02-03
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="https://devbattery.com/til/company-35/"><img src="https://devbattery.com/assets/images/teasers/til.png" width="100%" style="border-radius: 10px;" alt="[TIL] 신입 개발자 공부/일 35일차"></a><br/>
+      <a href="https://devbattery.com/til/company-35/"><b>[TIL] 신입 개발자 공부/일 35일차</b></a><br/>
+      2026-02-02
+    </td>
+    <td align="center" width="50%">
       <a href="https://devbattery.com/til/company-34/"><img src="https://devbattery.com/assets/images/teasers/til.png" width="100%" style="border-radius: 10px;" alt="[TIL] 신입 개발자 공부/일 34일차"></a><br/>
       <a href="https://devbattery.com/til/company-34/"><b>[TIL] 신입 개발자 공부/일 34일차</b></a><br/>
       2026-02-01
     </td>
+  </tr>
+  <tr>
     <td align="center" width="50%">
       <a href="https://devbattery.com/til/company-33/"><img src="https://devbattery.com/assets/images/teasers/til.png" width="100%" style="border-radius: 10px;" alt="[TIL] 신입 개발자 공부/일 33일차"></a><br/>
       <a href="https://devbattery.com/til/company-33/"><b>[TIL] 신입 개발자 공부/일 33일차</b></a><br/>
       2026-01-29
     </td>
-  </tr>
-  <tr>
     <td align="center" width="50%">
       <a href="https://devbattery.com/til/company-32/"><img src="https://devbattery.com/assets/images/teasers/til.png" width="100%" style="border-radius: 10px;" alt="[TIL] 신입 개발자 공부/일 32일차"></a><br/>
       <a href="https://devbattery.com/til/company-32/"><b>[TIL] 신입 개발자 공부/일 32일차</b></a><br/>
       2026-01-28
-    </td>
-    <td align="center" width="50%">
-      <a href="https://devbattery.com/til/company-31/"><img src="https://devbattery.com/assets/images/teasers/til.png" width="100%" style="border-radius: 10px;" alt="[TIL] 신입 개발자 공부/일 31일차"></a><br/>
-      <a href="https://devbattery.com/til/company-31/"><b>[TIL] 신입 개발자 공부/일 31일차</b></a><br/>
-      2026-01-27
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="50%">
-      <a href="https://devbattery.com/til/company-30/"><img src="https://devbattery.com/assets/images/teasers/til.png" width="100%" style="border-radius: 10px;" alt="[TIL] 신입 개발자 공부/일 30일차"></a><br/>
-      <a href="https://devbattery.com/til/company-30/"><b>[TIL] 신입 개발자 공부/일 30일차</b></a><br/>
-      2026-01-26
-    </td>
-    <td align="center" width="50%">
-      <a href="https://devbattery.com/til/company-29/"><img src="https://devbattery.com/assets/images/teasers/til.png" width="100%" style="border-radius: 10px;" alt="[TIL] 신입 개발자 공부/일 29일차"></a><br/>
-      <a href="https://devbattery.com/til/company-29/"><b>[TIL] 신입 개발자 공부/일 29일차</b></a><br/>
-      2026-01-25
     </td>
   </tr>
 </table>
